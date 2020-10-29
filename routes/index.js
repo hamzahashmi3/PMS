@@ -10,10 +10,20 @@ mongoose.connect("mongodb://localhost:27017/PMS",{useNewUrlParser: true, useCrea
 
 /* GET home page. */
 
-// if (typeof localStorage === "undefined" || localStorage === null) {
-//   var LocalStorage = require('node-localstorage').LocalStorage;
-//   localStorage = new LocalStorage('./scratch');
-// }
+if (typeof localStorage === "undefined" || localStorage === null) {
+  var LocalStorage = require('node-localstorage').LocalStorage;
+  localStorage = new LocalStorage('./scratch');
+}
+
+function checkLoginUser (req, res, next){
+  var userToken = localStorage.getItem('userToken');
+  try {
+    var decoded = jwt.verify(userToken, 'loginToken');
+  } catch(err) {
+    res.redirect('/')
+  }
+  next();
+}
 
 function checkUserName(req,res,next){
   var username = req.body.uname;
@@ -45,8 +55,12 @@ var checkuser = userModule.findOne({username:username});
 checkuser.exec((err,data)=>{
   if(err)throw err;
   var getpassword = data.password;
+  var getuserid = data._id;
   if(bcrypt.compareSync(password, getpassword)){
-    res.render('index', { title: 'Password Management System', msg:'user logged in successfully' });
+    var token = jwt.sign({ userId: getuserid }, 'loginToken');
+    localStorage.setItem('userToken', token);
+    localStorage.setItem('loginUser', username);
+   res.redirect('/dashboard');
   }else{
     res.render('index', { title: 'Password Management System', msg:'invalid username or password' });
   }
@@ -54,6 +68,11 @@ checkuser.exec((err,data)=>{
 });
 
 
+router.get('/dashboard',checkLoginUser, function(req, res, next) {
+  var loginUser=localStorage.getItem('loginUser');
+  console.log(loginUser );
+  res.render('dashboard', { title: 'Password Management System' ,loginUser:loginUser, msg:''});
+});
 
 router.get('/signup', function(req, res, next) {
   res.render('signup', { title: 'Password Management System' ,msg:''});
@@ -84,23 +103,25 @@ router.get('/signup', function(req, res, next) {
  
 });
 
-
-
-
-router.get('/passwordcategory', function(req, res, next) {
+router.get('/passwordcategory', checkLoginUser, function(req, res, next) {
   res.render('password_category', { title: 'Password Management System' });
 });
 
-router.get('/addnewcategory', function(req, res, next) {
+router.get('/addnewcategory', checkLoginUser, function(req, res, next) {
   res.render('addNewCategory', { title: 'Password Management System' });
 });
 
-router.get('/addnewpassword', function(req, res, next) {
+router.get('/addnewpassword', checkLoginUser, function(req, res, next) {
   res.render('addNewPassword', { title: 'Password Management System' });
 });
 
-router.get('/viewallpasswords', function(req, res, next) {
+router.get('/viewallpasswords', checkLoginUser, function(req, res, next) {
   res.render('viewAllPasswords', { title: 'Password Management System' });
 });
 
+router.get('/logout', function(req, res, next) {
+  localStorage.removeItem('userToken');
+  localStorage.removeItem('loginUser');
+  res.redirect('/');
+});
 module.exports = router;

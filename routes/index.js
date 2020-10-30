@@ -46,7 +46,12 @@ function checkEmail(req,res,next){
 
 
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Password Management System', msg:'' });
+  var loginUser=localStorage.getItem('loginUser');
+  if(loginUser){
+    res.redirect('/dashboard');
+  }else{
+    res.render('index', { title: 'Password Management System', msg:'' });
+  }
 });
 router.post('/', function(req, res, next) {
 var username = req.body.username;
@@ -104,19 +109,23 @@ router.get('/signup', function(req, res, next) {
 });
 
 router.get('/passwordcategory', checkLoginUser, function(req, res, next) {
-  res.render('password_category', { title: 'Password Management System' });
+  var loginUser=localStorage.getItem('loginUser');
+  res.render('password_category', { title: 'Password Management System', loginUser:loginUser });
 });
 
 router.get('/addnewcategory', checkLoginUser, function(req, res, next) {
-  res.render('addNewCategory', { title: 'Password Management System' });
+  var loginUser=localStorage.getItem('loginUser');
+  res.render('addNewCategory', { title: 'Password Management System', loginUser:loginUser  });
 });
 
 router.get('/addnewpassword', checkLoginUser, function(req, res, next) {
-  res.render('addNewPassword', { title: 'Password Management System' });
+  var loginUser=localStorage.getItem('loginUser');
+  res.render('addNewPassword', { title: 'Password Management System', loginUser:loginUser  });
 });
 
 router.get('/viewallpasswords', checkLoginUser, function(req, res, next) {
-  res.render('viewAllPasswords', { title: 'Password Management System' });
+  var loginUser=localStorage.getItem('loginUser');
+  res.render('viewAllPasswords', { title: 'Password Management System', loginUser:loginUser  });
 });
 
 router.get('/logout', function(req, res, next) {

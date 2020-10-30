@@ -13,32 +13,33 @@
   </head>
   <body>
     <div class="container">
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
-              <div class="navbar-header">
-                <a class="navbar-brand" href="/"><%= title %></a>
-              </div>
-              <ul class="nav navbar-nav">
-                <li class="active"><a href="/">Home</a></li>
-                <li class="dropdown">
-                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">Password Category
-                  <span class="caret"></span></a>
-                  <ul class="dropdown-menu">
-                    <li><a href="/addnewcategory">Add New Category</a></li>
-                    <li><a href="/passwordcategory">View All Category</a></li>
-                  </ul>
-                </li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Password Details
-                    <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                      <li><a href="/addnewpassword">Add New Password</a></li>
-                      <li><a href="/viewallpasswords">View All Password</a></li>
-                    </ul>
-                  </li>
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="/"><%= title %></a>
+          </div>
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="/">Home</a></li>
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Password Category
+              <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="/addnewcategory">Add New Category</a></li>
+                <li><a href="/passwordcategory">View All Category</a></li>
               </ul>
-            </div>
-          </nav>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Password Details
+                <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/addnewpassword">Add New Password</a></li>
+                  <li><a href="/viewallpasswords">View All Password</a></li>
+                </ul>
+              </li>
+              <li ><a href="/logout">Logout</a></li>
+          </ul>
+        </div>
+      </nav>
       <div class="row">
         <h2 class="text-center"><%= title %></h2>
           <div id="signupbox" style="margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">

@@ -13,5 +13,5 @@ var passwordCategorySchema = new mongoose.Schema({
         default: Date.now
     }
 });
-var PasswordCategoryModel = mongoose.model('passwordCategory', passwordCategorySchema);
+var PasswordCategoryModel = mongoose.model('password-Category', passwordCategorySchema);
 module.exports= PasswordCategoryModel;

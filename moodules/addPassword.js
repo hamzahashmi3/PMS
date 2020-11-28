@@ -3,10 +3,7 @@ var conn = mongoose.Collection;
 var passwordDetailSchema = new mongoose.Schema({
     password_category:{
         type: String,
-        required:true,
-        index:{
-            unique:true
-        }
+        required:true
     },
     project_name:{
         type: String,

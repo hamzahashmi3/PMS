@@ -5,8 +5,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 
 var app = express();
 
@@ -30,6 +28,23 @@ app.use(bodyParser.json())
 //   res.end(JSON.stringify(req.body))
 // })
 
+
+
+var usersRouter = require('./routes/users');
+var indexRouter = require('./routes/index');
+var dashboardRouter = require('./routes/dashboard');
+var addnewcategoryRouter = require('./routes/addnewcategory');
+var passwordcategoryRouter = require('./routes/passwordcategory');
+var addnewpasswordRouter = require('./routes/addnewpassword');
+var viewallpasswordsRouter = require('./routes/viewallpasswords');
+var passwordDetailRouter = require('./routes/password-detail');
+
+app.use('/password-detail', passwordDetailRouter);
+app.use('/viewallpasswords', viewallpasswordsRouter);
+app.use('/addnewpassword', addnewpasswordRouter);
+app.use('/passwordcategory', passwordcategoryRouter);
+app.use('/addnewcategory', addnewcategoryRouter);
+app.use('/dashboard', dashboardRouter);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 

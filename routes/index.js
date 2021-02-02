@@ -9,7 +9,7 @@ var getPassCat = PasswordCategoryModel.find({});
 var passwordDetailModel = require('../moodules/addPassword');
 var getAllPass = passwordDetailModel.find({});
 const mongoose = require('mongoose');
-mongoose.connect("mongodb://localhost:27017/PMS",{useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true});
+mongoose.connect("mongodb://localhost:27017/pms",{useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true});
 
 
 
@@ -78,11 +78,6 @@ checkuser.exec((err,data)=>{
 });
 
 
-router.get('/dashboard',checkLoginUser, function(req, res, next) {
-  var loginUser=localStorage.getItem('loginUser');
-  console.log(loginUser );
-  res.render('dashboard', { title: 'Password Management System' ,loginUser:loginUser, msg:''});
-});
 
 router.get('/signup', function(req, res, next) {
   res.render('signup', { title: 'Password Management System' ,msg:''});
@@ -111,142 +106,7 @@ router.get('/signup', function(req, res, next) {
   }
 });
 
-router.get('/addnewcategory', checkLoginUser, function(req, res, next) {
-  var loginUser=localStorage.getItem('loginUser'); 
-    res.render('addNewCategory', { title: 'Password Management System', loginUser:loginUser, errors:'', success:""});
-});
 
-router.post('/addnewcategory', checkLoginUser, [
-    check('Newcategory', 'pasword must be of at-least 5 characters').isLength({ min: 5 })],
-    function(req, res, next) {
-    var loginUser=localStorage.getItem('loginUser');
-    const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        console.log(errors.mapped())
-        res.render('addNewCategory', { title: 'Password Management System', loginUser:loginUser, errors:errors.mapped(), success:""  });
-      }else{
-        var PasswordCatName = req.body.Newcategory;
-        var passwordDetails = new PasswordCategoryModel({
-          password_category : PasswordCatName
-        })
-        passwordDetails.save((err,doc)=>{
-          if(err) throw err;
-          res.render('addNewCategory', { title: 'Password Management System', loginUser:loginUser, errors:'', success:"password category added successfully"  });
-          })
-    }
-  });
-
-router.get('/passwordcategory', checkLoginUser, function(req, res, next) {
-  var loginUser=localStorage.getItem('loginUser');
-  getPassCat.exec(function(err,data){
-    if(err) throw  err;
-    res.render('password_category', { title: 'Password Management System', loginUser:loginUser, records: data });
-});
-});
-
-router.get('/passwordcategory/delete/:id', checkLoginUser, function(req, res, next) {
-  var passId = req.params.id;
-  var passdelete = PasswordCategoryModel.findByIdAndDelete(passId);
-   passdelete.exec((err)=>{
-    if(err) throw  err;
-      res.redirect('/passwordcategory');
-  });
-});
-
-router.get('/passwordcategory/edit/:id', checkLoginUser, function(req, res, next) {
-  var loginUser=localStorage.getItem('loginUser');
-  var passId = req.params.id;
-  var passEdit = PasswordCategoryModel.findById(passId)
-  passEdit.exec((err,data)=>{
-    if(err) throw  err;
-    res.render('editPassCategory', { title: 'Password Management System', loginUser:loginUser, errors:'', success:'',id:passId , records: data });
-  });
-});
-
-router.post('/passwordcategory/edit', checkLoginUser, function(req, res, next) {
-  var passId = req.body.edit_id;
-  var passEditCat = req.body.Edit_category;
-  var passEdit = PasswordCategoryModel.findByIdAndUpdate(passId,{password_category : passEditCat})
-  passEdit.exec((err,doc)=>{
-    if(err) throw  err;
-res.redirect('/passwordcategory')  });
-});
-
-
-router.get('/addnewpassword', checkLoginUser, function(req, res, next) {
-  var loginUser=localStorage.getItem('loginUser');
-  getPassCat.exec((err,data)=>{
-    if(err) throw err;
-    res.render('addNewPassword', { title: 'Password Management System', loginUser:loginUser, records:data, success:''  });
-  })
-});
-
-router.post('/addnewpassword', checkLoginUser, function(req, res, next) {
-  var loginUser=localStorage.getItem('loginUser');
-  var pass_cat = req.body.Pass_cat;
-  var project_name = req.body.project_name;
-  var pass_details = req.body.pass_details;
-  var passdetails = new passwordDetailModel({
-    password_category : pass_cat,
-    project_name : project_name,
-    password_details : pass_details 
-  })
-  passdetails.save((err,data)=>{
-    getPassCat.exec((err,data)=>{
-      if(err) throw err;
-      res.render('addNewPassword', { title: 'Password Management System', loginUser:loginUser, records:data, success:'Password detils inserted successfully'  });
-    })
-  });
-
-});
-
-
-router.get('/viewallpasswords', checkLoginUser, function(req, res, next) {
-  var loginUser=localStorage.getItem('loginUser');
-  getAllPass.exec((err,data)=>{
-    if(err) throw err;
-    res.render('viewAllPasswords', { title: 'Password Management System', loginUser:loginUser, records:data   });
-  })
-});
-
-router.get('/password-detail', checkLoginUser, function(req, res, next) {
-  res.redirect('dashboard')
-});
-
-router.get('/password-detail/edit/:id', checkLoginUser, function(req, res, next) {
-  var loginUser=localStorage.getItem('loginUser');
-  var pass_detail_id = req.params.id;
-  var get_pass_details = passwordDetailModel.findById({_id:pass_detail_id});
-  get_pass_details.exec((err,data)=>{
-    if(err) throw err;
-    getPassCat.exec((err,data1)=>{
-      if(err) throw err;
-    res.render("editPasswordDetails", { title: 'Password Management System', loginUser:loginUser, records:data, record:data1, success:""  });
-})
-})
-});
-
-router.post('/password-detail/edit/:id', checkLoginUser, function(req, res, next) {
-  var loginUser=localStorage.getItem('loginUser');
-  var pass_detail_id = req.params.id;
-  var pass_cat = req.body.pass_cat;
-  var project_name = req.body.project_name;
-  var pass_details = req.body.pass_details;
-  passwordDetailModel.findByIdAndUpdate(pass_detail_id,
-    {password_category : pass_cat,
-      project_name: project_name,
-      password_details: pass_details}).exec(function(err){
-        if(err) throw err;
-        var get_pass_details = passwordDetailModel.findById({_id:pass_detail_id});
-        get_pass_details.exec((err,data)=>{
-          if(err) throw err;
-          getPassCat.exec((err,data1)=>{
-            if(err) throw err;
-          res.render("editPasswordDetails", { title: 'Password Management System', loginUser:loginUser, records:data, record:data1, success:"Password Updated successfully"  });
-      });
-      });
-      });
-      });
 
 router.get('/logout', function(req, res, next) {
   localStorage.removeItem('userToken');
